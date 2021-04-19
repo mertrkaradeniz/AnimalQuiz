@@ -1,19 +1,25 @@
-package com.mertrizakaradeniz.animalquiz
+package com.mertrizakaradeniz.animalquiz.view
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.speech.tts.TextToSpeech
 import android.util.Log
+import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.mertrizakaradeniz.animalquiz.R
+import com.mertrizakaradeniz.animalquiz.adapter.OptionsBoardAdapter
 import com.mertrizakaradeniz.animalquiz.models.Animal
 import com.mertrizakaradeniz.animalquiz.models.BoardSize
 import com.mertrizakaradeniz.animalquiz.models.Question
 import com.mertrizakaradeniz.animalquiz.utils.*
+import java.util.*
+import kotlin.collections.ArrayList
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
     companion object {
         private const val TAG = "MainActivity"
@@ -24,8 +30,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var tvQuestions: TextView
     private lateinit var rvOptionsBoard: RecyclerView
     private lateinit var adapter: OptionsBoardAdapter
+    private lateinit var tts: TextToSpeech
 
-    private var boardSize = BoardSize.LEVEL_4
+    private var boardSize = BoardSize.LEVEL_1
     private var Qposition = 0
     private var question = ArrayList<Animal>()
     private var cards = ArrayList<Question>()
@@ -41,9 +48,32 @@ class MainActivity : AppCompatActivity() {
         fabSound = findViewById(R.id.fabSound)
         tvQuestions = findViewById(R.id.tvQuestion)
         rvOptionsBoard = findViewById(R.id.rvOptionsBoard)
+        tts = TextToSpeech(this, this)
 
         setupQuestion()
         setupOptionsBoard()
+
+    }
+
+    override fun onInit(status: Int) {
+        if (status == TextToSpeech.SUCCESS) {
+            val result = tts.setLanguage(Locale.US)
+            if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                Log.i(TAG, "The Language specified is not supported!")
+            } else {
+                speakOut(cards[Qposition].questionText.toString())
+            }
+        } else Log.i(TAG, "Initialization Failed!")
+    }
+
+    override fun onDestroy() {
+        tts.stop()
+        tts.shutdown()
+        super.onDestroy()
+    }
+
+    private fun speakOut(text: String) {
+        tts.speak(text, TextToSpeech.QUEUE_ADD, null, "")
     }
 
     private fun setupOptionsBoard() {
@@ -55,22 +85,30 @@ class MainActivity : AppCompatActivity() {
                     else if (boardSize == BoardSize.LEVEL_3) boardSize = BoardSize.LEVEL_4
                     else if (boardSize == BoardSize.LEVEL_4) boardSize = BoardSize.LEVEL_5
                     else if (boardSize == BoardSize.LEVEL_5) Log.i(TAG, "YOU WON")
-                    Qposition = 0
+                    score += 5
+                    tvScore.setText("Score: $score")
+                    speakOut("You got it!")
                     setupQuestion()
                     setupOptionsBoard()
+                    Thread.sleep(1000);
+                    speakOut(cards[Qposition].questionText.toString())
+                    Qposition = 0
                 }
-                if (position == answer) {
+                else if (position == answer) {
                     Qposition++
                     Log.i(TAG, "$Qposition")
                     score += 5
                     tvScore.setText("Score: $score")
+                    speakOut("You got it!")
                     setupQuestion()
                     adapter.notifyDataSetChanged()
-
-                } else {
-                    Log.i(TAG, "Answer is not correct")
-                    score -= 5
-                    tvScore.setText("Score: $score")
+                    Thread.sleep(1000);
+                    speakOut(cards[Qposition].questionText.toString())
+                    Log.i(TAG, "Answer is correct $answer")
+                } else if (position != answer) {
+                    Log.i(TAG, "Answer is not correct $answer")
+                    speakOut("The answer is wrong!")
+                    Toast.makeText(this@MainActivity, "Game Over!!", Toast.LENGTH_SHORT).show()
                 }
             }
         })
@@ -156,5 +194,9 @@ class MainActivity : AppCompatActivity() {
                 answer = cards[Qposition].correctAnswer!!
             }
         }
+    }
+
+    fun fab_OnClick(view: View) {
+        speakOut(cards[Qposition].questionText.toString())
     }
 }

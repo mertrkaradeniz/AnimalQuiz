@@ -1,4 +1,4 @@
-package com.mertrizakaradeniz.animalquiz
+package com.mertrizakaradeniz.animalquiz.adapter
 
 import android.content.Context
 import android.util.Log
@@ -8,9 +8,10 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
+import com.mertrizakaradeniz.animalquiz.R
 import com.mertrizakaradeniz.animalquiz.models.Animal
 import com.mertrizakaradeniz.animalquiz.models.BoardSize
-import com.mertrizakaradeniz.animalquiz.models.Question
+import com.mertrizakaradeniz.animalquiz.utils.CardClickListener
 import kotlin.math.min
 
 class OptionsBoardAdapter(
