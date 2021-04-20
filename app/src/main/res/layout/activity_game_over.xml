@@ -138,7 +138,7 @@
         app:layout_constraintStart_toEndOf="@+id/imageView2"
         app:layout_constraintTop_toTopOf="@+id/imageView2" />
 
-    <view
+    <View
         android:id="@+id/view"
         android:layout_width="0dp"
         android:layout_height="2dp"
@@ -146,7 +146,7 @@
         android:background="@color/black"
         app:layout_constraintEnd_toEndOf="@+id/textView8"
         app:layout_constraintStart_toStartOf="@+id/imageView2"
-        app:layout_constraintTop_toBottomOf="@+id/imageView2"></view>
+        app:layout_constraintTop_toBottomOf="@+id/imageView2"></View>
 
     <TextView
         android:id="@+id/textView10"
