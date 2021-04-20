@@ -90,9 +90,9 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                     speakOut("You got it!")
                     setupQuestion()
                     setupOptionsBoard()
-                    Thread.sleep(1000);
-                    speakOut(cards[Qposition].questionText.toString())
+                    Thread.sleep(1000)
                     Qposition = 0
+                    speakOut(cards[Qposition].questionText.toString())
                 }
                 else if (position == answer) {
                     Qposition++
@@ -102,7 +102,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                     speakOut("You got it!")
                     setupQuestion()
                     adapter.notifyDataSetChanged()
-                    Thread.sleep(1000);
+                    Thread.sleep(1000)
                     speakOut(cards[Qposition].questionText.toString())
                     Log.i(TAG, "Answer is correct $answer")
                 } else if (position != answer) {
