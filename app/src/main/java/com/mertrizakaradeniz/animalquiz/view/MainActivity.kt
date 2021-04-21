@@ -1,14 +1,17 @@
 package com.mertrizakaradeniz.animalquiz.view
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.speech.tts.TextToSpeech
 import android.util.Log
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
@@ -22,13 +25,16 @@ import com.mertrizakaradeniz.animalquiz.utils.*
 import java.util.*
 import kotlin.collections.ArrayList
 
+
 class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
     companion object {
         private const val TAG = "MainActivity"
     }
 
+
     private lateinit var tvScore: TextView
+    private lateinit var toolbar: androidx.appcompat.widget.Toolbar
     private lateinit var fabSound: FloatingActionButton
     private lateinit var tvQuestions: TextView
     private lateinit var rvOptionsBoard: RecyclerView
@@ -50,6 +56,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
         // Initialize the view elements
         tvScore = findViewById(R.id.tvScore)
+        toolbar = findViewById(R.id.toolbar)
         fabSound = findViewById(R.id.fabSound)
         tvQuestions = findViewById(R.id.tvQuestion)
         rvOptionsBoard = findViewById(R.id.rvOptionsBoard)
@@ -78,9 +85,8 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         super.onDestroy()
     }
 
-    private fun animate(animationView : LottieAnimationView) {
+    private fun animate(animationView: LottieAnimationView) {
         animationView.visibility = View.VISIBLE
-        //animationView.setSpeed(1f)
         animationView.playAnimation()
     }
 
@@ -109,8 +115,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                         speakOut(cards[qPosition].questionText.toString())
                         qPosition = 0
                         animationSuccess.visibility = View.GONE
-                    }, 1500)
-
+                    }, 2000)
                 } else if (position == answer) {
                     qPosition++
                     score += 5
@@ -122,7 +127,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                         adapter.notifyDataSetChanged()
                         speakOut(cards[qPosition].questionText.toString())
                         animationSuccess.visibility = View.GONE
-                    }, 1500)
+                    }, 2000)
                     Log.i(TAG, "Answer is correct $answer")
                 } else if (position != answer) {
                     speakOut("The answer is wrong!")
@@ -146,7 +151,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     private fun setupQuestion() {
         when (boardSize) {
             BoardSize.LEVEL_1 -> {
-                supportActionBar!!.setTitle("Level 1")
+                //supportActionBar!!.setTitle("Level 1")
                 cards.clear()
                 question.clear()
                 cards.add(Q1Lvl1)
@@ -158,7 +163,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                 answer = cards[qPosition].correctAnswer!!
             }
             BoardSize.LEVEL_2 -> {
-                supportActionBar!!.setTitle("Level 2")
+                //supportActionBar!!.setTitle("Level 2")
                 cards.clear()
                 question.clear()
                 cards.add(Q1Lvl2)
@@ -171,7 +176,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                 answer = cards[qPosition].correctAnswer!!
             }
             BoardSize.LEVEL_3 -> {
-                supportActionBar!!.setTitle("Level 3")
+                //supportActionBar!!.setTitle("Level 3")
                 cards.clear()
                 question.clear()
                 cards.add(Q1Lvl3)
@@ -185,7 +190,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                 answer = cards[qPosition].correctAnswer!!
             }
             BoardSize.LEVEL_4 -> {
-                supportActionBar!!.setTitle("Level 4")
+                //supportActionBar!!.setTitle("Level 4")
                 cards.clear()
                 question.clear()
                 cards.add(Q1Lvl4)
@@ -201,7 +206,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                 answer = cards[qPosition].correctAnswer!!
             }
             BoardSize.LEVEL_5 -> {
-                supportActionBar!!.setTitle("Level 5")
+                //supportActionBar!!.setTitle("Level 5")
                 cards.clear()
                 question.clear()
                 cards.add(Q1Lvl5)

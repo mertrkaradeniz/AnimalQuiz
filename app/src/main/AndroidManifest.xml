@@ -12,7 +12,8 @@
         <activity android:name=".view.GameOverActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
-        <activity android:name=".view.MainActivity">
+        <activity android:name=".view.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
