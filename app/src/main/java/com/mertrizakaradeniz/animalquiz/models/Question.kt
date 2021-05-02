@@ -10,5 +10,5 @@ data class Question(
     val animalSix: Animal? = null,
     val animalSeven: Animal? = null,
     val animalEight: Animal? = null,
-    var correctAnswer: Int? = null
+    val correctAnswer: Int? = null
 )

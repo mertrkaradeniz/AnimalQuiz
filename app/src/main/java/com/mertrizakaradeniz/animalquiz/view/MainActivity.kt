@@ -1,12 +1,16 @@
 package com.mertrizakaradeniz.animalquiz.view
 
 import android.content.Intent
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Handler
 import android.speech.tts.TextToSpeech
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -55,7 +59,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     private var answer = -1
     private var score = 0
     private var playAgain = false
-    private var duration: Long = TimeUnit.MINUTES.toMillis(2)
+    private var duration: Long = TimeUnit.MINUTES.toMillis(2) + 5000
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -105,8 +109,14 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                     Handler().postDelayed({
                         speakOut(cards[qPosition].questionText.toString())
                     }, 3000)
+                    Handler().postDelayed({
+                        playSound()
+                    }, 5000)
                 } else {
                     speakOut(cards[qPosition].questionText.toString())
+                    Handler().postDelayed({
+                        playSound()
+                    }, 5000)
                 }
             }
         } else Log.i(TAG, "Initialization Failed!")
@@ -123,7 +133,6 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             override fun onTick(millisUntilFinished: Long) {
                 tvTime.text = "${(millisUntilFinished / 1000).toInt()} s"
             }
-
             override fun onFinish() {
                 speakOut("Time's up")
                 animate(lottieAnimation, R.raw.times_up)
@@ -147,6 +156,29 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
     private fun speakOut(text: String) {
         tts.speak(text, TextToSpeech.QUEUE_ADD, null, "")
+    }
+
+    private fun makeSound(soundId: Int) {
+        var mediaPlayer = MediaPlayer.create(this, soundId)
+        mediaPlayer.start()
+        Handler().postDelayed({
+            mediaPlayer?.release()
+            mediaPlayer = null
+        }, 2000)
+    }
+
+    private fun playSound() {
+        val correctId = cards[qPosition].correctAnswer
+        when (correctId) {
+            0 -> makeSound(cards[qPosition].animalOne!!.sound)
+            1 -> makeSound(cards[qPosition].animalTwo!!.sound)
+            2 -> makeSound(cards[qPosition].animalThree!!.sound)
+            3 -> makeSound(cards[qPosition].animalFour!!.sound)
+            4 -> makeSound(cards[qPosition].animalFive!!.sound)
+            5 -> makeSound(cards[qPosition].animalSix!!.sound)
+            6 -> makeSound(cards[qPosition].animalSeven!!.sound)
+            7 -> makeSound(cards[qPosition].animalEight!!.sound)
+        }
     }
 
     private fun setupOptionsBoard() {
@@ -173,30 +205,14 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                             return
                         }
                     }
-                    score += 5
-                    tvScore.setText("Score: $score")
-                    speakOut("You got it!")
-                    animate(lottieAnimation, R.raw.successful)
+                    answerCorrect()
                     Handler().postDelayed({
-                        setupQuestion()
                         setupOptionsBoard()
-                        speakOut(cards[qPosition].questionText.toString())
-                        qPosition = 0
-                        lottieAnimation.visibility = View.GONE
                     }, 2000)
+                    qPosition = 0
                 } else if (position == answer) {
                     qPosition++
-                    score += 5
-                    tvScore.setText("Score: $score")
-                    speakOut("You got it!")
-                    animate(lottieAnimation, R.raw.successful)
-                    Handler().postDelayed({
-                        setupQuestion()
-                        adapter.notifyDataSetChanged()
-                        speakOut(cards[qPosition].questionText.toString())
-                        lottieAnimation.visibility = View.GONE
-                    }, 2000)
-                    Log.i(TAG, "Answer is correct $answer")
+                    answerCorrect()
                 } else if (position != answer) {
                     speakOut("The answer is wrong!")
                     speakOut("Game Over")
@@ -215,6 +231,23 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         rvOptionsBoard.adapter = adapter
         rvOptionsBoard.setHasFixedSize(true)
         rvOptionsBoard.layoutManager = GridLayoutManager(this, boardSize.getWidth())
+    }
+
+    private fun answerCorrect() {
+        score += 5
+        tvScore.setText("Score: $score")
+        speakOut("You got it!")
+        animate(lottieAnimation, R.raw.successful)
+        Handler().postDelayed({
+            setupQuestion()
+            adapter.notifyDataSetChanged()
+            lottieAnimation.visibility = View.GONE
+            speakOut(cards[qPosition].questionText.toString())
+            Handler().postDelayed({
+                playSound()
+            }, 1000)
+        }, 2000)
+        Log.i(TAG, "Answer is correct $answer")
     }
 
     private fun setupQuestion() {
@@ -297,5 +330,12 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
     fun fab_OnClick(view: View) {
         speakOut(cards[qPosition].questionText.toString())
+        Handler().postDelayed({
+            playSound()
+        }, 1000)
+    }
+
+    fun restart_OnClick(view: View) {
+        recreate()
     }
 }
